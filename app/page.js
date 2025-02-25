@@ -1,13 +1,8 @@
 'use client';
 import { useState } from 'react';
-import { 
-  HeartIcon,
-  SpeakerWaveIcon,
-  SpeakerXMarkIcon 
-} from '@heroicons/react/24/solid';
+import { HeartIcon } from '@heroicons/react/24/solid';
 import { GiBrokenHeart } from 'react-icons/gi';
 import dynamic from 'next/dynamic';
-import { useAudio } from '../hooks/useAudio';
 
 const Confetti = dynamic(() => import('react-confetti'), {
   ssr: false
@@ -17,18 +12,14 @@ export default function ApologyPage() {
   const [isAnimating, setIsAnimating] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [hearts, setHearts] = useState([]);
-  const [isPlaying, togglePlay] = useAudio('/sad-music.mp3');
 
   const handleForgiveness = () => {
     setIsAnimating(true);
     setShowConfetti(true);
     setTimeout(() => setIsAnimating(false), 1000);
-    setHearts([...hearts, Date.now()]);
     
-    // Fade out music if playing
-    if (isPlaying) {
-      togglePlay();
-    }
+    // Add floating hearts
+    setHearts([...hearts, Date.now()]);
   };
 
   return (
@@ -76,22 +67,6 @@ export default function ApologyPage() {
             <HeartIcon className="w-6 h-6 animate-pulse" />
           </button>
         </div>
-        <button
-    onClick={togglePlay}
-    className="flex items-center gap-2 text-gray-600 hover:text-red-500 transition-colors"
-  >
-    {isPlaying ? (
-      <>
-        <SpeakerWaveIcon className="w-6 h-6" />
-        Pause Sad Music
-      </>
-    ) : (
-      <>
-        <SpeakerXMarkIcon className="w-6 h-6" />
-        Play Sad Music
-      </>
-    )}
-  </button>
 
         <div className="mt-12 text-gray-500 text-sm">
           <p>P.S. I promise my next project will be something we can enjoy together! �</p>
