@@ -1,101 +1,103 @@
-import Image from "next/image";
+'use client';
+import { useState } from 'react';
+import { 
+  HeartIcon,
+  SpeakerWaveIcon,
+  SpeakerXMarkIcon 
+} from '@heroicons/react/24/solid';
+import { GiBrokenHeart } from 'react-icons/gi';
+import dynamic from 'next/dynamic';
+import { useAudio } from '../hooks/useAudio';
 
-export default function Home() {
+const Confetti = dynamic(() => import('react-confetti'), {
+  ssr: false
+});
+
+export default function ApologyPage() {
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [hearts, setHearts] = useState([]);
+  const [isPlaying, togglePlay] = useAudio('/sad-music.mp3');
+
+  const handleForgiveness = () => {
+    setIsAnimating(true);
+    setShowConfetti(true);
+    setTimeout(() => setIsAnimating(false), 1000);
+    setHearts([...hearts, Date.now()]);
+    
+    // Fade out music if playing
+    if (isPlaying) {
+      togglePlay();
+    }
+  };
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="min-h-screen bg-pink-50 flex flex-col items-center justify-center p-4 relative overflow-hidden">
+      {showConfetti && <Confetti recycle={false} numberOfPieces={200} />}
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      {/* Floating hearts */}
+      {hearts.map((heart) => (
+        <div
+          key={heart}
+          className="absolute animate-float text-red-500 text-4xl"
+          style={{ left: `${Math.random() * 100}%` }}
+        >
+          ❤️
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      ))}
+
+      <div className="max-w-2xl text-center space-y-6">
+        <h1 className="text-6xl font-bold text-red-600 mb-8 animate-bounce">
+          Dear Tamlin,
+        </h1>
+
+        <div className="space-y-4 text-lg text-gray-800">
+          <p className={`transition-transform duration-500 ${isAnimating ? 'scale-110' : ''}`}>
+            I'm really sorry for getting carried away with building websites... 🌐
+          </p>
+          <p className="flex items-center justify-center gap-2">
+            I know I've been <GiBrokenHeart className="text-red-600 animate-pulse" /> neglecting our time together
+          </p>
+          <p>Here's what I've learned:</p>
+          <ul className="list-disc list-inside text-left mx-auto max-w-xs">
+            <li>Family {'>'} Flexbox</li>
+            <li>Conversations {'>'} Code reviews</li>
+            <li>Memories {'>'} Metadata</li>
+          </ul>
+        </div>
+
+        <div className="mt-8">
+          <button
+            onClick={handleForgiveness}
+            className="bg-red-500 hover:bg-red-600 text-white px-8 py-4 rounded-full text-xl font-semibold transition-all transform hover:scale-105 flex items-center gap-2 mx-auto"
+          >
+            <HeartIcon className="w-6 h-6 animate-pulse" />
+            Please forgive me?
+            <HeartIcon className="w-6 h-6 animate-pulse" />
+          </button>
+        </div>
+        <button
+    onClick={togglePlay}
+    className="flex items-center gap-2 text-gray-600 hover:text-red-500 transition-colors"
+  >
+    {isPlaying ? (
+      <>
+        <SpeakerWaveIcon className="w-6 h-6" />
+        Pause Sad Music
+      </>
+    ) : (
+      <>
+        <SpeakerXMarkIcon className="w-6 h-6" />
+        Play Sad Music
+      </>
+    )}
+  </button>
+
+        <div className="mt-12 text-gray-500 text-sm">
+          <p>P.S. I promise my next project will be something we can enjoy together! �</p>
+          <p className="mt-2 text-xs">(No websites were harmed in the making of this apology)</p>
+        </div>
+      </div>
     </div>
   );
 }
